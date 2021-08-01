@@ -16,11 +16,11 @@ container.addEventListener('click',function(){
     analyser = audioContext.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioContext.destination);
-    analyser.fftSize = 64;
+    analyser.fftSize = 128;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     
-    const barWidth = canvas.width/bufferLength;
+    const barWidth = (canvas.width/2)/bufferLength;
     let barHeight;
     let x;
     
@@ -28,12 +28,7 @@ container.addEventListener('click',function(){
         x = 0;
         ctx.clearRect(0,0,canvas.width,canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        for(let i = 0; i<bufferLength;i++){
-            barHeight = dataArray[i]*2;
-            ctx.fillStyle = 'red';
-            ctx.fillRect(x,canvas.height - barHeight,barWidth,barHeight)
-            x+=barWidth
-        }
+        drawVisualiser(bufferLength,x,barWidth, barHeight,dataArray)
         requestAnimationFrame(animate);
     }
     animate();
@@ -53,7 +48,7 @@ file.addEventListener('change',function(){
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     
-    const barWidth = canvas.width/bufferLength;
+    const barWidth = (canvas.width/2)/bufferLength;
     let barHeight;
     let x;
     function animate(){
@@ -71,7 +66,23 @@ file.addEventListener('change',function(){
 function drawVisualiser(bufferLength,x,barWidth, barHeight,dataArray){
     for(let i = 0; i<bufferLength;i++){
         barHeight = dataArray[i]*2;
-        ctx.fillStyle = 'red';
+        const red = i*barHeight/20;
+        const green = i*4;
+        const blue = barHeight/2;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(canvas.width/2-x,canvas.height - barHeight-30,barWidth,2)
+        ctx.fillStyle = 'rgb('+red+','+green+','+blue+')';
+        ctx.fillRect(canvas.width/2-x,canvas.height - barHeight,barWidth,barHeight)
+        x+=barWidth
+    }
+    for(let i = 0; i<bufferLength;i++){
+        barHeight = dataArray[i]*2;
+        const red = i*barHeight/20;
+        const green = i*4;
+        const blue = barHeight/2;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x,canvas.height - barHeight-30,barWidth,2)
+        ctx.fillStyle = 'rgb('+red+','+green+','+blue+')';
         ctx.fillRect(x,canvas.height - barHeight,barWidth,barHeight)
         x+=barWidth
     }
