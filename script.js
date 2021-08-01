@@ -60,14 +60,19 @@ file.addEventListener('change',function(){
         x = 0;
         ctx.clearRect(0,0,canvas.width,canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        for(let i = 0; i<bufferLength;i++){
-            barHeight = dataArray[i]*2;
-            ctx.fillStyle = 'red';
-            ctx.fillRect(x,canvas.height - barHeight,barWidth,barHeight)
-            x+=barWidth
-        }
+        drawVisualiser(bufferLength,x,barWidth, barHeight,dataArray)
         requestAnimationFrame(animate);
     }
     animate();
     
+    
 })
+
+function drawVisualiser(bufferLength,x,barWidth, barHeight,dataArray){
+    for(let i = 0; i<bufferLength;i++){
+        barHeight = dataArray[i]*2;
+        ctx.fillStyle = 'red';
+        ctx.fillRect(x,canvas.height - barHeight,barWidth,barHeight)
+        x+=barWidth
+    }
+}
